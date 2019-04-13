@@ -60,16 +60,21 @@ public class SampleKeyManagerClient extends SCABasedKeyManagerClient {
         IdentityProvider identityProvider = null;
 
         IdentityApplicationManagementServiceStub stub = super.getIdentityApplicationManagementServiceStub();
-        IdentityProvider[] federatedIdPs = stub.getAllIdentityProviders();
 
-        if (federatedIdPs != null && federatedIdPs.length > 0) {
-            for (IdentityProvider registeredIdentityProvider : federatedIdPs) {
-                if (registeredIdentityProvider.getIdentityProviderName().equals(FEDERATED_AUTHENTICATOR_NAME)) {
-                    identityProvider = registeredIdentityProvider;
-                    break;
+        if (stub != null) {
+            IdentityProvider[] federatedIdPs = stub.getAllIdentityProviders();
+            if (federatedIdPs != null && federatedIdPs.length > 0) {
+                for (IdentityProvider registeredIdentityProvider : federatedIdPs) {
+                    if (registeredIdentityProvider.getIdentityProviderName().equals(FEDERATED_AUTHENTICATOR_NAME)) {
+                        identityProvider = registeredIdentityProvider;
+                        break;
+                    }
                 }
             }
+        } else {
+            throw new APIManagementException("Retrieving IdentityApplicationManagementServiceStub failed.");
         }
+
         IdentityProvider[] identityProviders = new IdentityProvider[1];
         identityProviders[0] = identityProvider;
 
